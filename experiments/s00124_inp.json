@@ -1,0 +1,33 @@
+{
+    "settings":
+    {
+	"a_cut": 6e-5,
+	"freq_lo": 0.3,
+	"freq_step": 0.05,
+	"freq_hi": 2.2,
+	"fft" : {
+	    "windowing_type": "none",
+	    "windowing_width" : 2,
+	    "padding" : 18
+	}
+    },
+    
+    "sample":
+    [
+	{"name": "air",      "d": 0,    "n": 1},
+    {"name": "quartz",   "d": 1000, "n": 1.95}, 
+	{"name": "wo3_p",    "d": 0.77, "n": "solve"}, 
+	{"name": "air",      "d": 0,    "n": 1}
+    ],
+
+    "reference":
+    [
+	{"name": "air",      "d": 0,    "n": 1},
+    {"name": "quartz",   "d": 1000, "n": 1.95}, 
+	{"name": "wo3_n",    "d": 0.77, "n": 6}, 
+	{"name": "air",      "d": 0,    "n": 1}
+    ]
+
+}
+
+    
