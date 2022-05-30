@@ -1,9 +1,9 @@
 function [freq, cond_archive] = live_process(ref_name, smp_name, d)
 
-inp = 'C:\Users\utayv\OneDrive\Desktop\grad\research\wires_writeup\experiments\s00124_inp.json';
+inp = '/home/uri/Desktop/grad/wire_grid_rcwa/experiments/s00124_inp.json';
 
 
-n_smp =50;
+n_smp = 200;
 
 cond_archive = [];
 

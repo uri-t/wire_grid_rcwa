@@ -12,7 +12,7 @@ t_smp = d_on(:,1);
 % A_smp = d_on(:,2) + d_off(:,2);
 
 
-inp = 'C:\Users\utayv\OneDrive\Desktop\grad\research\wire_grid_rcwa\layer_test_input.json';
+inp = '/home/uri/Desktop/grad/wire_grid_rcwa/experiments/s00124_inp.json';
 
 [freq, ~, ~, ~, ~, ~] = exp_tf(t_smp, A_ref, t_ref, A_ref, load_input(inp));
 
@@ -27,7 +27,7 @@ N = 256;
 
 cond_archive_wires = [];
 
-for ii = 1:50
+for ii = 1:200
     [~, r]  = sort(rand(1,68));
     inds = r < 7;
 
