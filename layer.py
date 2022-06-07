@@ -1,21 +1,17 @@
-from material import Material
 import numpy as np
+from S_mats import S_mats
 
 class Layer:
-    def __init__(self, d, nh, ys, eps):
+    def __init__(self, d, eps):
         self.d = d
-        self.nh = nh
-        self.ys = ys
         self.eps = eps
 
-    def S_mats(self, freq):
+    def S_mats(self, freq, ys, nh):
         c = 3e14   # speed of light (um/s)
         k0 = 2*np.pi*freq*1e12/c; #rad/um
         mu = 1;    # assume uniform susceptibility = 1
 
-        nh = self.nh
-        eps = self.eps(freq)
-        ys = self.ys
+        eps = self.eps(freq, ys)
         d = self.d
         
         if nh > len(eps):
@@ -81,6 +77,5 @@ class Layer:
         S12 = S21
         S22 = S11
 
-        #import pdb; pdb.set_trace()
-        return {'S11': S11, 'S12': S12, 'S21': S21, 'S22': S22}
+        return S_mats(S11 = S11, S12 = S12, S21 = S21, S22 = S22)
         

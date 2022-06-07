@@ -7,7 +7,7 @@ c = 3e14; % speed of light, micrometers per second
 p = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c).*n*d);
 
 % construct convolution matrix for permittivity
-nh = 25;
+nh = 5;
 full_spec = fftshift(fft(eps))/numel(eps);
 Ek = zeros(nh, nh);
 
