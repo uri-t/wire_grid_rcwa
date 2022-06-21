@@ -6,6 +6,8 @@ class S_mats:
        self.S12 = S12
        self.S21 = S21
        self.S22 = S22
+
+   
        
    def star(mat1, mat2):
       n = np.shape(mat1.S11)[1]
