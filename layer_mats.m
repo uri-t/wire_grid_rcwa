@@ -66,8 +66,6 @@ smats.S21 = inv(A - X*B*inv(A)*X*B)*X*(A - B*inv(A)*B);
 smats.S12 = smats.S21;
 smats.S22 = smats.S11;
 
-% keyboard
-
 % convolution matrix for refractive index
 function [cmat] = ref_conv(n)
     n_spec = fftshift(fft(n))/numel(n);

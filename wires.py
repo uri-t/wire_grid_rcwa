@@ -1,6 +1,6 @@
 import numpy as np
-from material import Material
-from layer import Layer
+from .material import Material
+from .layer import Layer
 
 class Wires(Layer):
     def __init__(self, wire_mat, fill_mat, wire_fill_frac, period, d):
@@ -23,7 +23,7 @@ class Wires(Layer):
         wire_hi = self.period - wire_lo
         
         for i in range(0, len(ys)):
-            if (ys[i] <= wire_lo) | (ys[i] > wire_hi):
+            if (ys[i] < wire_lo) | (ys[i] > wire_hi):
                 eps_ret[i] = self.wire_mat.get_eps(freq)
 
         return eps_ret

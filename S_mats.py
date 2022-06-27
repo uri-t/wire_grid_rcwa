@@ -15,7 +15,7 @@ class S_mats:
       I_mat = np.eye(n)
        
       row1_mat = mat1.S12 @ np.linalg.inv(I_mat - mat2.S11 @ mat1.S22)
-      row2_mat = mat2.S12 @ np.linalg.inv(I_mat - mat1.S22 @ mat2.S11)
+      row2_mat = mat2.S21 @ np.linalg.inv(I_mat - mat1.S22 @ mat2.S11)
        
       S11 = mat1.S11 + row1_mat @ mat2.S11 @ mat1.S21
       S12 = row1_mat @ mat2.S12

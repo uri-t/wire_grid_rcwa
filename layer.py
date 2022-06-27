@@ -1,5 +1,5 @@
 import numpy as np
-from S_mats import S_mats
+from .S_mats import S_mats
 
 class Layer:
     def __init__(self, d, eps):

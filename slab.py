@@ -1,6 +1,6 @@
 import numpy as np
-from material import Material
-from layer import Layer
+from .material import Material
+from .layer import Layer
 
 class Slab(Layer):
     def __init__(self, material, d):

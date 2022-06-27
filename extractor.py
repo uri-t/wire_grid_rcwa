@@ -1,5 +1,6 @@
 from scipy.optimize import minimize
 import numpy as np
+from .structure import Structure
 
 class Extractor:
     def cost(tf1, tf2):
@@ -15,12 +16,12 @@ class Extractor:
         curr_eps = [np.real(start), np.imag(start)]
         
         for i in range(0, len(freq)):
-            smp_tf = lambda eps: struct_smp.trial_tf(mat, freq[i], eps[0] + 1j*eps[1])
-            ref_tf = lambda eps: struct_ref.trial_tf(mat, freq[i], eps[0] + 1j*eps[1])
+            trial_tf = lambda eps: Structure.trial_tf_smp_ref(struct_smp, struct_ref, mat, freq[i], eps[0] + 1j*eps[1])
             
-            err = lambda eps: Extractor.cost(smp_tf(eps)/ref_tf(eps),tf[i])
+            err = lambda eps: Extractor.cost(trial_tf(eps), tf[i])
 
-            opt = minimize(err, curr_eps, method = 'nelder-mead').x
+            opt = minimize(err, curr_eps, method = 'BFGS',
+                           options = {'disp': True, 'gtol':1e-9}).x
             eps_extract[i] = opt[0] + 1j*opt[1]
 
             print(opt)

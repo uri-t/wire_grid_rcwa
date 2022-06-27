@@ -14,7 +14,6 @@ eps_full_on(ys >= a_lo & ys <= a_hi) = eps_on;
 eps_full_off = repmat(eps_wires, [numel(ys), 1]);
 eps_full_off(ys >= a_lo & ys <= a_hi) = eps_off;
 
-
 [S_wire_on, ~] = layer_mats(ys, eps_full_on, d, freq);
 [S_wire_off, K] = layer_mats(ys, eps_full_off, d, freq);
 
@@ -25,6 +24,8 @@ S_on = star(S_wire_on, S_trn);
 S_off = star(S_wire_off, S_trn);
 
 nh = size(K,1);
+
+keyboard
 
 s_in = zeros(nh,1);
 s_in((nh-1)/2 + 1) = 1;
