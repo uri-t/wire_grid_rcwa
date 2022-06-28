@@ -21,10 +21,9 @@ class Extractor:
             err = lambda eps: Extractor.cost(trial_tf(eps), tf[i])
 
             opt = minimize(err, curr_eps, method = 'BFGS',
-                           options = {'disp': True, 'gtol':1e-9}).x
+                           options = {'gtol':1e-9}).x
             eps_extract[i] = opt[0] + 1j*opt[1]
 
-            print(opt)
             curr_eps = opt
 
         print(len(eps_extract))
