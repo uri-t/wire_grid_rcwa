@@ -11,7 +11,6 @@ class Extractor:
 
     def extract(struct_ref, struct_smp, mat, freq, tf, start):
         eps_extract = np.zeros(len(freq), dtype = complex)
-        print(len(eps_extract))
         
         curr_eps = [np.real(start), np.imag(start)]
         
@@ -26,7 +25,6 @@ class Extractor:
 
             curr_eps = opt
 
-        print(len(eps_extract))
         return eps_extract
 
             

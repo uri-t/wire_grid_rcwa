@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('/home/uri/Desktop/grad')
+sys.path.append('..')
 
 import numpy as np
 import wire_grid_rcwa as wgr
