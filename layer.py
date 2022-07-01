@@ -14,9 +14,9 @@ class Layer:
         eps = self.eps(freq, ys)
         d = self.d
         
-        if nh > len(eps):
+        if nh > len(eps)/2:
             raise ValueError(
-                'Permittivity vector have at least as many entries as number of harmonics')
+                'Permittivity vector have at least twice as many entries as number of harmonics')
 
         if np.mod(nh, 2) == 0:
             raise ValueError('The number of harmonics must be odd')

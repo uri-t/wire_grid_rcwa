@@ -5,7 +5,7 @@ import wire_grid_rcwa as wgr
 import matplotlib.pyplot as plt
 import re
 
-def process_simulation(path, name, y_pts, nh):
+def process_simulation(path, name, y_pts, nh, ax = None):
     # import time domain data
     d_on = np.genfromtxt(f'{path}/{name}_smp_post.tsv', skip_header = 2)
     d_off = np.genfromtxt(f'{path}/{name}_ref_post.tsv', skip_header = 2)
@@ -25,13 +25,15 @@ def process_simulation(path, name, y_pts, nh):
     params = dict(zip(keys, values))
 
     #set up geometry
-    freq = np.arange(0.3, 2.15,0.05)
+    freq = np.arange(0.2, 2.15,0.1)
     tf = wgr.transfer_function(t_smp, A_smp, t_ref, A_ref,
                                freqs = freq, zero_padding = 2**18)
 
     period = params['period']
-    ys = np.arange(0, period + period/(y_pts-1), period/(y_pts-1))
+    
+    ys = np.linspace(0, period, num = y_pts)
 
+    
     subs_mat = wgr.Material(eps = 1.95**2, freq = freq)
     wire_mat = wgr.Material(eps = params['ea'], cond = params['siga'],
                             freq = freq)
@@ -62,21 +64,31 @@ def process_simulation(path, name, y_pts, nh):
                                           start = fill_mat_on.get_eps(freq[0]))
 
     
-    fig, axs = plt.subplots(1,2)
-    eps_sim = np.array([fill_mat_on.get_eps(x) for x in freq])
-
-    axs[0].plot(freq, np.real(eps_sim), 'b')
-    axs[0].plot(freq, np.real(eps_extracted), 'ro')
-
-    axs[1].plot(freq, np.imag(eps_sim), 'b')
-    axs[1].plot(freq, np.imag(eps_extracted), 'ro')
-    plt.show()
+    if not ax:
+        fig, ax = plt.subplots()
     
+    eps_sim = np.array([fill_mat_on.get_eps(x) for x in freq])
+    cond = wgr.eps_to_photocond(freq, eps_extracted, params['eb'])
+
+    sigb = params['sigb']
+    pct_err_re = 100*(np.real(cond) - sigb)/sigb
+    pct_err_im = 100*(np.imag(cond) - 0)/sigb
+    ax.plot(freq, pct_err_re, 'r')
+    ax.plot(freq, pct_err_im, 'b')
 
 
 
 path = '/home/uri/Desktop/grad/wire_grid_rcwa/simulation_data/wires_on_off_w_photoexcited_layer_results'
-name = 'd_wires_0.5_d_smp_0.75_ea_9_eb_16_f_0.1_period_10_siga_150000_sigb_1'
-y_pts = 256
-nh = 51
-process_simulation(path, name, y_pts, nh)
+name = 'd_wires_0.5_d_smp_0.75_ea_9_eb_16_f_0.9_period_10_siga_150000_sigb_1'
+
+#y_pts_arr = [128, 256, 512]
+#nh_arr = [31, 61, 91, 121]
+
+
+nh = 311
+
+fig, ax = plt.subplots()
+
+for i in range(0, 10, 2):
+    process_simulation(path, name, 1024, nh + i, ax = ax)
+plt.show()

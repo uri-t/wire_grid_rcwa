@@ -7,3 +7,4 @@ from .half_space_tr import HalfSpaceTr
 from .extractor import Extractor
 from .structure import Structure
 from .transfer_function import transfer_function
+from .utils import eps_to_photocond

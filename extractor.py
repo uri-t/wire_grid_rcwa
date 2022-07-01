@@ -1,6 +1,7 @@
 from scipy.optimize import minimize
 import numpy as np
 from .structure import Structure
+from tqdm import tqdm
 
 class Extractor:
     def cost(tf1, tf2):
@@ -14,7 +15,7 @@ class Extractor:
         
         curr_eps = [np.real(start), np.imag(start)]
         
-        for i in range(0, len(freq)):
+        for i in tqdm(range(0, len(freq))):
             trial_tf = lambda eps: Structure.trial_tf_smp_ref(struct_smp, struct_ref, mat, freq[i], eps[0] + 1j*eps[1])
             
             err = lambda eps: Extractor.cost(trial_tf(eps), tf[i])
