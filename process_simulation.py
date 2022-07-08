@@ -3,9 +3,13 @@ sys.path.append('..')
 import numpy as np
 import wire_grid_rcwa as wgr
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import re
+import glob
+import os
+from tqdm import tqdm
 
-def process_simulation(path, name, y_pts, nh, ax = None):
+def process_simulation(path, name, y_pts, nh, ax = None, **kwargs):
     # import time domain data
     d_on = np.genfromtxt(f'{path}/{name}_smp_post.tsv', skip_header = 2)
     d_off = np.genfromtxt(f'{path}/{name}_ref_post.tsv', skip_header = 2)
@@ -73,22 +77,81 @@ def process_simulation(path, name, y_pts, nh, ax = None):
     sigb = params['sigb']
     pct_err_re = 100*(np.real(cond) - sigb)/sigb
     pct_err_im = 100*(np.imag(cond) - 0)/sigb
-    ax.plot(freq, pct_err_re, 'r')
-    ax.plot(freq, pct_err_im, 'b')
+
+    ax.plot(freq, pct_err_re, **kwargs)
+    ax.plot(freq, pct_err_im, '--', **kwargs)
+    ax.set_title(name, fontsize = 4)
+
+    return {'params': params,
+            'pct_err_re': pct_err_re,
+            'pct_err_im': pct_err_im,
+            'freq': freq }
+
+def plot_conv(path, name, ax, f, keys):
+    #nhs = range(9, 23, 4)
+    #nhs = range(3, 5, 2)
+
+    nhs = [5,7,9,11,13,15,17,19,21,23]
+    
+    pts = mpl.colors.Normalize()(nhs)
+    for i in range(0, len(nhs)):
+        
+        data = process_simulation(path, name, 128, nhs[i], ax = ax,
+                                  color = plt.get_cmap('cool')(pts[i]),
+                                  alpha = 0.5)
+
+        params = data['params']
+        freq = data['freq']
+        pct_err_re = data['pct_err_re']
+        pct_err_im = data['pct_err_im']
+        
+        
+        for j in range(0, len(freq)):
+            for key in keys:
+                f.write(str(params[key]) + ',')
+            f.write(str(freq[j]) + ',')
+            f.write(str(pct_err_re[j]) + ',')
+            f.write(str(pct_err_im[j]) + ',')
+            f.write(path + ",")
+            f.write(str(nhs[i]))
+            f.write("\n")
+
+        
 
 
 
-path = '/home/uri/Desktop/grad/wire_grid_rcwa/simulation_data/wires_on_off_w_photoexcited_layer_results'
-name = 'd_wires_0.5_d_smp_0.75_ea_9_eb_16_f_0.9_period_10_siga_150000_sigb_1'
+path_base = '/home/uri/Desktop/grad/wire_grid_rcwa/simulation_data/wires_on_off_w_photoexcited_layer_results/'
 
-#y_pts_arr = [128, 256, 512]
-#nh_arr = [31, 61, 91, 121]
+cells_per_wavelength = ['70', '80', '90']
 
 
-nh = 311
+with open("extraction_data.txt", 'w') as f:
+    keys = ['d_wires', 'd_smp', 'ea', 'eb', 'f', 'period', 'siga', 'sigb']
+    for key in keys:
+            f.write(f'{key},')
 
-fig, ax = plt.subplots()
+    f.write('freq,pct_re,pct_im,path,nh\n')
 
-for i in range(0, 10, 2):
-    process_simulation(path, name, 1024, nh + i, ax = ax)
+
+    for cpw in cells_per_wavelength:
+        path = path_base + cpw
+        fnames = [os.path.basename(x) for x in glob.glob(f'{path}/*.tsv')]
+        fnames = [x[:-13] for x in fnames]
+        fnames = list(set(fnames))
+        print(len(fnames))
+
+        n_row = int(np.ceil(np.sqrt(len(fnames))))
+        n_col = int(np.ceil(len(fnames)/n_row))
+
+        fig, axs = plt.subplots(n_row, n_col, constrained_layout= True)
+    
+        for ii in tqdm(range(0, n_row)):
+            for jj in tqdm(range(0, n_col)):
+                ind = ii*n_col + jj
+                print(f'===== {ind} ======')
+                if ind < len(fnames):
+                    plot_conv(path, fnames[ind], axs[ii, jj], f, keys)
+            
+            
+            
 plt.show()

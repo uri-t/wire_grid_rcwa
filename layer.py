@@ -30,6 +30,20 @@ class Layer:
             inds = list(np.arange(0, -nh, -1) + i + mid)
             inds = [int(x) for x in inds]
             Ek[i,:] = full_spec[inds]
+        
+
+        # construct convolution matrix for inverse permittivity
+        inv_eps = 1/np.array(eps)
+        full_spec_a = np.fft.fftshift(np.fft.fft(inv_eps))/len(eps)
+        Ak = np.zeros((nh, nh)).astype(complex)
+
+        for i in range(0, nh):
+            mid = np.floor(len(eps)/2)
+            inds = list(np.arange(0, -nh, -1) + i + mid)
+            inds = [int(x) for x in inds]
+            Ak[i,:] = full_spec_a[inds]
+ 
+        
 
         # construct wave vector array
         dy = ys[1] - ys[0]
@@ -43,9 +57,13 @@ class Layer:
         K = np.diag(ks).astype(complex)
 
         # construct full propagation matrix
-        omega_sq = K@np.linalg.inv(Ek)@K@Ek - mu*Ek
-        Q_mat = -Ek
+        #omega_sq = K@np.linalg.inv(Ek)@K@Ek - mu*Ek
 
+        Ak_inv = np.linalg.inv(Ak)
+        omega_sq = K@np.linalg.inv(Ek)@K@Ak_inv - mu*Ak_inv
+        Q_mat = -Ak_inv
+        #Q_mat = -Ek
+        
         # calculate scattering matrices for vacuum (gap layer)
         omega_0 = K@K-np.eye(nh)
         W_0 = np.eye(nh)
