@@ -41,7 +41,7 @@ def process_wires(smp_no):
     f = w_wire/period
 
     d_wires = 0.250
-    d_layer = smps[smp_no]['thickness']
+    d_layer = smps[smp_no]['thickness'] - d_wires
 
     nh = 25
     y_pts = 128
@@ -49,27 +49,27 @@ def process_wires(smp_no):
 
     eps_off = 6**2
     subs_mat = wgr.Material(eps = 1.95**2, freq = freq)
-    wire_mat = wgr.Material(eps = 1, cond = 1.5e5, freq = freq)
+    wire_mat = wgr.Material(eps = 10, cond = 1.5e5, freq = freq)
     fill_mat_on = wgr.Material(eps = eps_off, freq = freq)
     fill_mat_off = wgr.Material(eps = eps_off, freq = freq)
 
+    smp_slab = wgr.Slab(fill_mat_off, d_layer)
+    wires_on = wgr.Wires(wire_mat = wire_mat,
+                         fill_mat = fill_mat_off,
+                         wire_fill_frac = f,
+                         period = period,
+                         d = d_wires)
+    ref_slab = wgr.Slab(fill_mat_on, d_layer)
+    wires_off = wgr.Wires(wire_mat = wire_mat,
+                          fill_mat = fill_mat_on,
+                          wire_fill_frac = f,
+                          period = period,
+                          d = d_wires)
     
-    s_ref = wgr.Structure(ys = ys, nh = nh,
-                          layers = [wgr.Slab(fill_mat_off, d_layer),
-                                    wgr.Wires(wire_mat = wire_mat,
-                                              fill_mat = fill_mat_off,
-                                              wire_fill_frac = f,
-                                              period = period,
-                                              d = d_wires)],
+    s_ref = wgr.Structure(ys = ys, nh = nh, layers = [smp_slab, wires_on],
                           half_space_tr = wgr.HalfSpaceTr(subs_mat))
 
-    s_smp = wgr.Structure(ys = ys, nh = nh,
-                          layers = [wgr.Slab(fill_mat_on, d_layer),
-                                    wgr.Wires(wire_mat = wire_mat,
-                                              fill_mat = fill_mat_on,
-                                              wire_fill_frac = f,
-                                              period = period,
-                                              d = d_wires)],
+    s_smp = wgr.Structure(ys = ys, nh = nh, layers = [ref_slab, wires_off],
                           half_space_tr = wgr.HalfSpaceTr(subs_mat))
 
     eps_extracted = wgr.Extractor.extract(s_ref, s_smp,
