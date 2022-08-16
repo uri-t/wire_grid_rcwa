@@ -88,10 +88,9 @@ def process_simulation(path, name, y_pts, nh, ax = None, **kwargs):
             'freq': freq }
 
 def plot_conv(path, name, ax, f, keys):
-    #nhs = range(9, 23, 4)
-    #nhs = range(3, 5, 2)
+    #nhs = [5,7,9,11,13,15,17,19,21,23]
 
-    nhs = [5,7,9,11,13,15,17,19,21,23]
+    nhs = [11,15,19,23]
     
     pts = mpl.colors.Normalize()(nhs)
     for i in range(0, len(nhs)):

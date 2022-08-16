@@ -5,6 +5,8 @@ sys.path.append('..')
 import numpy as np
 import wire_grid_rcwa as wgr
 
+import matplotlib.pyplot as plt
+
 # import time domain data
 d_on = np.genfromtxt('ds_test_on.txt', delimiter = "\t")
 d_off = np.genfromtxt('ds_test_off.txt', delimiter = "\t") 
@@ -47,5 +49,19 @@ s_smp = wgr.Structure(ys = ys, nh = nh,
 
 extracted = wgr.Extractor.extract(s_ref, s_smp,
                                   fill_mat_onn, freq, tf, 9.01 - 0.001*1j)
-print(extracted)
+#print(extracted)
+cond = wgr.eps_to_photocond(freq, extracted, fill_eps)
 
+eps_sim_re = np.genfromtxt('eps_re_sim.txt')
+eps_sim_im = np.genfromtxt('eps_im_sim.txt')
+
+freq_sim = eps_sim_re[:,0]
+
+eps_sim = eps_sim_re[:,1] - 1j*eps_sim_im[:,1]
+cond_sim = wgr.eps_to_photocond(freq_sim, eps_sim, fill_eps)
+
+plt.plot(freq_sim, np.real(cond_sim), 'b')
+plt.plot(freq_sim, np.imag(cond_sim), 'b--')
+plt.plot(freq, np.real(cond), 'r')
+plt.plot(freq, np.imag(cond), 'r--')
+plt.show()

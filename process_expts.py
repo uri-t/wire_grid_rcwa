@@ -8,6 +8,9 @@ import matplotlib as mpl
 import pandas as pd
 
 
+
+plt.style.use(['./general.mplstyle', './single_column.mplstyle'])
+
 smps = pd.read_csv('experimental_data/table.csv')\
          .set_index('sample_no')\
          .to_dict(orient='index')
@@ -27,7 +30,7 @@ def process_wires(smp_no):
     A_ref = d_off[:,1]
     A_smp = A_ref + d_diff[:,1]
 
-    freq = np.arange(0.2, 2.3, 0.1)
+    freq = np.arange(0.4, 2.3, 0.1)
     
     tf = wgr.transfer_function(t_smp, A_smp, t_ref, A_ref,
                                freqs = freq, zero_padding = 2**18)
@@ -40,36 +43,53 @@ def process_wires(smp_no):
     period = w_wire + w_smp
     f = w_wire/period
 
-    d_wires = 0.250
-    d_layer = smps[smp_no]['thickness'] - d_wires
+    d_wires = 0.25
+    d_layer = smps[smp_no]['thickness'] - (d_wires)
 
     nh = 25
-    y_pts = 128
+    y_pts = 256
     ys = np.linspace(0, period, num = y_pts)
 
     eps_off = 6**2
     subs_mat = wgr.Material(eps = 1.95**2, freq = freq)
+    air_mat = wgr.Material(eps = 1, freq = freq)
     wire_mat = wgr.Material(eps = 10, cond = 1.5e5, freq = freq)
     fill_mat_on = wgr.Material(eps = eps_off, freq = freq)
     fill_mat_off = wgr.Material(eps = eps_off, freq = freq)
 
-    smp_slab = wgr.Slab(fill_mat_off, d_layer)
+    smp_slab = wgr.Slab(fill_mat_on, d_layer)
+    ref_slab = wgr.Slab(fill_mat_off, d_layer)
     wires_on = wgr.Wires(wire_mat = wire_mat,
-                         fill_mat = fill_mat_off,
+                         fill_mat = fill_mat_on,
                          wire_fill_frac = f,
                          period = period,
                          d = d_wires)
-    ref_slab = wgr.Slab(fill_mat_on, d_layer)
+
     wires_off = wgr.Wires(wire_mat = wire_mat,
-                          fill_mat = fill_mat_on,
+                          fill_mat = fill_mat_off,
                           wire_fill_frac = f,
                           period = period,
                           d = d_wires)
     
-    s_ref = wgr.Structure(ys = ys, nh = nh, layers = [smp_slab, wires_on],
+    wires_wo3_on = wgr.Wires(wire_mat = air_mat,
+                             fill_mat = fill_mat_on,
+                             wire_fill_frac = f,
+                             period = period,
+                             d = d_wires)
+
+    wires_wo3_off = wgr.Wires(wire_mat = air_mat,
+                              fill_mat = fill_mat_off,
+                              wire_fill_frac = f,
+                              period = period,
+                              d = d_wires)
+    
+    
+    s_ref = wgr.Structure(ys = ys, nh = nh,
+                          layers = [wires_wo3_off, ref_slab, wires_off],
                           half_space_tr = wgr.HalfSpaceTr(subs_mat))
 
-    s_smp = wgr.Structure(ys = ys, nh = nh, layers = [ref_slab, wires_off],
+    s_smp = wgr.Structure(ys = ys, nh = nh,
+                          layers = [wires_wo3_on, smp_slab, wires_on],
                           half_space_tr = wgr.HalfSpaceTr(subs_mat))
 
     eps_extracted = wgr.Extractor.extract(s_ref, s_smp,
@@ -101,7 +121,7 @@ def process_no_wires(smp_no):
     A_ref = d_off[:,1]
     A_smp = A_ref + d_diff[:,1]
 
-    freq = np.arange(0.2, 2.3, 0.1)
+    freq = np.arange(0.4, 2.3, 0.1)
     
     tf = wgr.transfer_function(t_smp, A_smp, t_ref, A_ref,
                                freqs = freq, zero_padding = 2**18)
@@ -110,7 +130,7 @@ def process_no_wires(smp_no):
     d_layer = smps[smp_no]['thickness']
 
     nh = 25
-    y_pts = 128
+    y_pts = 256
     period = 12
     ys = np.linspace(0, period, num = y_pts)
 
@@ -137,6 +157,8 @@ def process_no_wires(smp_no):
         
     plt.plot(freq, np.real(cond), 'r')
     plt.plot(freq, np.imag(cond), 'r--')
+    plt.xlabel('Frequency (THz)')
+    plt.ylabel('Conductivity (S/m)')
 
 
     return {'freq': freq, 'cond': cond}
@@ -148,5 +170,5 @@ for smp in smps:
         process_no_wires(smp)
     else:
         process_wires(smp)
-
+        
 plt.show()

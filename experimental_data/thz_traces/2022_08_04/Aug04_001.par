@@ -1,0 +1,27 @@
+Data acquired using Kairos Amplified v2 (written by Coleen Nemes February 2016).	
+Probe Scan.	
+
+air ref	
+
+Iterations Completed:	9
+Iterations Requested:	9
+Time Started:	8/4/2022 at 11:03:29 AM
+Time Completed:	8/4/2022 at 11:08:27 AM
+Total Scan Time:	5.0 minutes
+Both Channels?	No
+Channel 1:	X
+Channel 2:	Not Collected.
+Time Constant:	30 ms
+Sample Rate:	64 Hz
+Sensitivity:	2 nV/fA
+Phase:	-44.93
+Data Start Pos. in ps:	541.999400
+Data End Pos. in ps:	551.999733
+Motor Start Pos. in cnts:	324872
+Motor End Pos. in cnts:	331068
+Trigger Offset in cnts:	100
+Trigger Pos. in cnts:	324972
+Number of Points:	1938
+Scan Rate in ps/s:	0.330231
+Scan Rate in cnts/s:	198.000000
+Data Spacing in ps:	0.01

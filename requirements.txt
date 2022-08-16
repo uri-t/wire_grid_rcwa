@@ -4,3 +4,4 @@ matplotlib ~= 3.5
 tqdm ~= 4.6
 pandas ~= 1.4
 seaborn ~= 1.8
+h5py ~= 3.7

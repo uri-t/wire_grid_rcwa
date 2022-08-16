@@ -1,0 +1,31 @@
+Data acquired using Kairos Amplified v2 (written by Coleen Nemes February 2016).	
+Probe Step.	
+
+s00128 probe step, 272 deg.
+50 mW chopped
+353 ps	
+
+Iterations Completed:	11
+Iterations Requested:	1000
+Time Started:	8/4/2022 at 5:41:26 PM
+Time Completed:	8/4/2022 at 6:01:04 PM
+Total Scan Time:	19.6 minutes
+Both Channels?	No
+Channel 1:	X
+Channel 2:	Not Collected.
+Time Constant:	30 ms
+Sample Rate:	64 Hz
+Sensitivity:	5 mV/nA
+Phase:	-44.93
+Data Start Pos. in cnts:	327071.000000
+Data Start Pos. in ps:	545.500183
+Data Spacing in cnts:	30
+Data Spacing in ps:	0.05004
+Data End Pos. in cnts:	333366.000000
+Data End Pos. in ps:	555.999199
+Number of Points:	211
+Number of Time Constants to wait:	5.000000
+Total Wait Time in ms:	150.000000
+Samples per Point:	5
+Number of TC to wait per sample:	0
+Pump position: 	353.00
