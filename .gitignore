@@ -2,3 +2,5 @@
 rcwa/
 __pycache__/
 *.png
+\#*
+*.swp
